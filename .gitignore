@@ -1,0 +1,20 @@
+# Compiled artifacts
+*.ex5
+
+# Logs/config/temp
+*.log
+*.ini
+*.dat
+
+# MT5 folders that should never be versioned
+tester/
+profiles/
+MQL5/Logs/
+MQL5/Profiles/
+MQL5/Tester/
+MQL5/Files/
+MQL5/Images/
+
+# OS junk
+.DS_Store
+Thumbs.db
