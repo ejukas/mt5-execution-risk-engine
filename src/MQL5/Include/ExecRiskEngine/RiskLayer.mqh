@@ -4,6 +4,14 @@
 #define __RISK_LAYER_INCLUDED__ 1
 
 
+enum KillMode
+{
+   KILL_NONE = 0,
+   KILL_SOFT = 1,
+   KILL_HARD = 2
+};
+
+
 class RiskLayer
 {
 private:
@@ -11,6 +19,8 @@ private:
    double   m_equityStart;
    double   m_equityPeak;
    bool     m_blockTrading;
+   KillMode m_killMode;
+
 
    datetime DayKey(datetime t) const
    {
@@ -28,6 +38,8 @@ public:
       m_equityStart  = 0.0;
       m_equityPeak   = 0.0;
       m_blockTrading = false;
+      m_killMode = KILL_SOFT;
+
    }
 
    void ResetForNewDay(double currentEquity)
@@ -62,18 +74,30 @@ public:
    bool CheckDailyMaxDrawdownMoney(double maxDdMoney, double currentEquity, double &outDdMoney)
    {
       outDdMoney = m_equityPeak - currentEquity;
-
-      if(maxDdMoney <= 0.0)
-         return true; // disabled
-
+   
+      if(maxDdMoney <= 0.0 || m_killMode == KILL_NONE)
+         return true;
+   
       if(outDdMoney >= maxDdMoney)
       {
          m_blockTrading = true;
          return false;
       }
-
+   
       return !m_blockTrading;
    }
+
+   
+   void SetKillMode(KillMode mode)
+   {
+      m_killMode = mode;
+   }
+   
+   KillMode GetKillMode() const
+   {
+      return m_killMode;
+   }
+
 
    bool IsBlocked() const { return m_blockTrading; }
 
